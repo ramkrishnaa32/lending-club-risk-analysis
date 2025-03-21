@@ -13,3 +13,5 @@ def initialize_spark_session(AppName):
     master('local'). \
     getOrCreate()
     return spark
+
+
