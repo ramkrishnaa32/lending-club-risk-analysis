@@ -1,4 +1,11 @@
-import constants, helperFunctions
+"""
+1. Creating a database lending_club
+2. Creating external tables for cleaned data
+3. Loading the cleaned data into the tables
+4. Checking the data in the tables
+"""
+
+import helperFunctions
 
 print("Initiating spark session")
 spark = helperFunctions.initialize_spark_session("lending_club_risk_analysis")
