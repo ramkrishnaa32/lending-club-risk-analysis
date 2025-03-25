@@ -8,7 +8,7 @@ def initialize_spark_session(AppName):
     appName(AppName). \
     config('spark.ui.port', '0'). \
     config('spark.shuffle.useOldFetchProtocol', 'true'). \
-    config("spark.sql.warehouse.dir", f"/user/{username}/warehouse"). \
+    config("spark.sql.warehouse.dir", f'/Users/kramkrishnaachary/warehouse'). \
     enableHiveSupport(). \
     master('local'). \
     getOrCreate()

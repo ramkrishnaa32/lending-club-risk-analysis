@@ -87,7 +87,7 @@ select name_sha2 as member_id, delinq_2yrs, delinq_amnt, pub_rec, pub_rec_bankru
 inq_last_6mths, total_rec_late_fee, mths_since_last_delinq, mths_since_last_record
 from newtable
 """
-spark.sql(loan_data_query).repartition(1).write \
+spark.sql(loan_defualters_query).repartition(1).write \
 .option("header",True)\
 .format("csv") \
 .mode("overwrite") \
