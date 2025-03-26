@@ -1,14 +1,12 @@
 """
-Loan Score Calculation:
-Higher the score higher chance of getting loan approved
-    1. Loan repayment history (last payment, total payment received, loan status, funded amount, grade)
-    2. Loan defaulters history (delinquency, public records, inquiries)
-    3. Customer finacial health (annual income, home ownership)
-
-Wetghtage:
-    repayment history - 20%
-    defaulters history - 45%
-    financial health - 35%
+1. Cleaning the data and storing it in the disk
+2. Remmving duplicate member ids from the customers, loans_defaulters_delinq and loans_defaulters_details tables
+3. Storing the duplicate member ids for notifying the team
+4. Combining all the member ids from the above tables
+5. Storing the duplicate member ids
+6. Filtering the duplicate member ids from the customers, loans_defaulters_delinq and loans_defaulters_details tables
+7. Storing the filtered data
+8. Creating external tables for the cleaned data
 """
 
 # Importing the required libraries
