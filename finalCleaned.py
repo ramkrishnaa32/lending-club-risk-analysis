@@ -120,4 +120,65 @@ duplicate_member_ids.repartition(1).write \
 .option("path", f"{constants.path}/duplicate_member_ids") \
 .save()
 
+duplicate_member_ids.createOrReplaceTempView("duplicate_member_ids")
 
+# Filtering the duplicate member ids from the customers, loans_defaulters_delinq and loans_defaulters_details tables
+customers_filtered = spark.sql(""" SELECT * FROM lending_club.customers
+          where member_id not in (select member_id from duplicate_member_ids)""")
+
+loans_defaulters_delinq_filtered = spark.sql(""" SELECT * FROM lending_club.loans_defaulters_delinq
+             where member_id not in (select member_id from duplicate_member_ids)""")
+
+loans_defaulters_details_filtered = spark.sql(""" SELECT * FROM lending_club.loans_defaulters_details 
+                                              where member_id not in (select member_id from duplicate_member_ids)""")
+
+# Storing the filtered data
+customers_filtered.write \
+.format("parquet") \
+.mode("overwrite") \
+.option("path", f"{constants.path}/cleaned/customers") \
+.save()
+
+loans_defaulters_delinq_filtered.write \
+.format("parquet") \
+.mode("overwrite") \
+.option("path", f"{constants.path}/cleaned/loans_defaulters_delinq") \
+.save()
+
+loans_defaulters_details_filtered.write \
+.format("parquet") \
+.mode("overwrite") \
+.option("path", f"{constants.path}/cleaned/loans_defaulters_details") \
+.save()
+
+# Creating external tables for the cleaned data
+spark.sql("""DROP TABLE IF EXISTS lending_club.customers_c""")
+spark.sql("""
+CREATE EXTERNAL TABLE IF NOT EXISTS lending_club.customers_c (member_id string, emp_title string, emp_length int, 
+home_ownership string, annual_income float, address_state string, address_zipcode string, address_country string, grade string, 
+sub_grade string, verification_status string, total_high_credit_limit float, application_type string, 
+join_annual_income float, verification_status_joint string, ingest_date timestamp)
+stored as parquet
+LOCATION '/Users/kramkrishnaachary/Learning/data_engineering/lending_club_project/data/cleaned/customers'""")
+
+spark.sql("""DROP TABLE IF EXISTS lending_club.loans_defaulters_delinq_c""")
+spark.sql("""
+CREATE EXTERNAL TABLE lending_club.loans_defaulters_delinq_c(member_id string,delinq_2yrs integer, delinq_amnt float, 
+mths_since_last_delinq integer)
+stored as parquet
+LOCATION '/Users/kramkrishnaachary/Learning/data_engineering/lending_club_project/data/cleaned/loans_defaulters_delinq'""")
+
+spark.sql("""DROP TABLE IF EXISTS lending_club.loans_defaulters_details_c""")
+spark.sql("""
+CREATE EXTERNAL TABLE lending_club.loans_defaulters_details_c(member_id string, pub_rec integer, pub_rec_bankruptcies integer, 
+inq_last_6mths integer)
+stored as parquet
+LOCATION '/Users/kramkrishnaachary/Learning/data_engineering/lending_club_project/data/cleaned/loans_defaulters_details'""")
+
+spark.sql("SHOW TABLES").show(truncate=False)
+
+spark.sql(""" SELECT member_id, count(*) as totalCount
+              from lending_club.customers_c
+              group by member_id order by totalCount desc""").show(10, truncate=False)
+
+print("Completed, Final cleaned data stored successfully")
