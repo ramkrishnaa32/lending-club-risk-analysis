@@ -1,5 +1,5 @@
 import time
-import constants, helperFunctions
+import lib.constants as constants, lib.helperFunctions as helperFunctions
 
 print("Initiating spark session")
 spark = helperFunctions.initialize_spark_session("lending_club_risk_analysis")
