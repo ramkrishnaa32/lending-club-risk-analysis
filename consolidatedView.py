@@ -5,7 +5,7 @@
 4. The table should be refreshed with the latest data in every 7 days
 5. Checking the data in the table
 """
-import constants, helperFunctions
+import lib.constants as constants, lib.helperFunctions as helperFunctions
 
 print("Initiating spark session")
 spark = helperFunctions.initialize_spark_session("lending_club_risk_analysis")
